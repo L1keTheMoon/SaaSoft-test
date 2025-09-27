@@ -1,0 +1,7 @@
+/dist/
+/node_modules/
+/*.min.js
+package-lock.json
+yarn.lock
+*.md
+*.svg

@@ -1,20 +1,20 @@
-<script setup lang='ts'>
+<script setup lang="ts">
 import Account from './Account.vue';
 
 const titles = ['Метки', 'Тип записи', 'Логин', 'Пароль'];
 </script>
 
 <template>
-  <header class='header'>
+  <header class="header">
     <h1>Учетные записи</h1>
-    <VBtn variant='outlined' icon='mdi-plus' size='x-large' style='border-radius: 8px;' />
+    <VBtn variant="outlined" icon="mdi-plus" size="x-large" style="border-radius: 8px" />
   </header>
-  <div class='help'>
-    <VIcon icon='mdi-help-circle-outline' size='x-large' />
+  <div class="help">
+    <VIcon icon="mdi-help-circle-outline" size="x-large" />
     Для указания нескольких меток для одной пары логин/пароль используйте разделитель ;
   </div>
-  <div class='title'>
-    <p v-for='item in titles' :key='item'>
+  <div class="title">
+    <p v-for="item in titles" :key="item">
       {{ item }}
     </p>
   </div>
