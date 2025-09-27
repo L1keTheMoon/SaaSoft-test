@@ -28,26 +28,17 @@ export default [
       parser: typescriptParser,
       ecmaVersion: 'latest',
       sourceType: 'module',
+      globals: {
+        ...globals.browser,
+      },
     },
     plugins: {
+      prettier: prettierPlugin,
       '@typescript-eslint': typescriptPlugin,
     },
     rules: {
       '@typescript-eslint/no-unused-vars': 'warn',
       '@typescript-eslint/no-explicit-any': 'warn',
-    },
-  },
-  {
-    files: ['**/*.vue', '**/*.js', '**/*.ts'],
-    plugins: {
-      prettier: prettierPlugin,
-    },
-    languageOptions: {
-      ecmaVersion: 'latest',
-      sourceType: 'module',
-    },
-    rules: {
-      'vue/multi-word-component-names': 'off',
       'prettier/prettier': 'error',
     },
   },
@@ -57,6 +48,21 @@ export default [
       parserOptions: {
         parser: typescriptParser,
       },
+      ecmaVersion: 'latest',
+      sourceType: 'module',
+      globals: {
+        ...globals.browser,
+      },
+    },
+    plugins: {
+      prettier: prettierPlugin,
+      '@typescript-eslint': typescriptPlugin,
+    },
+    rules: {
+      '@typescript-eslint/no-unused-vars': 'warn',
+      '@typescript-eslint/no-explicit-any': 'warn',
+      'vue/multi-word-component-names': 'off',
+      'prettier/prettier': 'error',
     },
   },
 ];

@@ -1,13 +1,23 @@
 <script setup lang="ts">
+import { useAccountsStore } from '../store/accounts';
 import Account from './Account.vue';
+
+const accountsStore = useAccountsStore();
 
 const titles = ['Метки', 'Тип записи', 'Логин', 'Пароль'];
 </script>
 
 <template>
   <header class="header">
+    <h1>{{ accountsStore.accounts[0]?.id }}</h1>
     <h1>Учетные записи</h1>
-    <VBtn variant="outlined" icon="mdi-plus" size="x-large" style="border-radius: 8px" />
+    <VBtn
+      @click="accountsStore.add"
+      variant="outlined"
+      icon="mdi-plus"
+      size="x-large"
+      style="border-radius: 8px"
+    />
   </header>
   <div class="help">
     <VIcon icon="mdi-help-circle-outline" size="x-large" />
@@ -18,9 +28,9 @@ const titles = ['Метки', 'Тип записи', 'Логин', 'Пароль
       {{ item }}
     </p>
   </div>
-  <ul>
-    <Account />
-  </ul>
+  <div class="accounts">
+    <Account v-for="item in accountsStore.accounts" :key="item.id" :="item" />
+  </div>
 </template>
 
 <style scoped>
@@ -43,5 +53,11 @@ const titles = ['Метки', 'Тип записи', 'Логин', 'Пароль
   grid-template-columns: repeat(4, 1fr) 56px;
   color: gray;
   margin-bottom: 8px;
+}
+
+.accounts {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
 }
 </style>
