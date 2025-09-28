@@ -4,7 +4,7 @@ import vue from '@vitejs/plugin-vue';
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [vue()],
-  base: 'https://github.com/L1keTheMoon/SaaSoft-test/',
+  base: 'https://l1kethemoon.github.io/SaaSoft-test/',
   resolve: {
     alias: {
       '@': '/src',
