@@ -39,7 +39,11 @@ function cleaarErrors(event: Event) {
   }
 }
 
-const selectData: AccountType[] = ['Local', 'LDAP'];
+// const selectData: AccountType[] = ['Local', 'LDAP'];
+const selectData: { title: string; value: AccountType }[] = [
+  { title: 'Локальный', value: 'Local' },
+  { title: 'LDAP', value: 'LDAP' },
+];
 </script>
 
 <template>
@@ -57,6 +61,8 @@ const selectData: AccountType[] = ['Local', 'LDAP'];
       name="type"
       v-model="data.type"
       variant="outlined"
+      item-title="title"
+      item-value="value"
       :items="selectData"
       @update:model-value="inputCompleteHandler"
     />
