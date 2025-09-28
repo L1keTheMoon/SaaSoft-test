@@ -32,6 +32,14 @@ function inputCompleteHandler() {
   }
 }
 
+function selectHandler(value: string) {
+  if (value === 'LDAP') {
+    data.password = '';
+    inputErrors.password = '';
+  }
+  inputCompleteHandler();
+}
+
 function cleaarErrors(event: Event) {
   const name = (event.target as HTMLInputElement).name;
   if (name in inputErrors) {
@@ -39,7 +47,6 @@ function cleaarErrors(event: Event) {
   }
 }
 
-// const selectData: AccountType[] = ['Local', 'LDAP'];
 const selectData: { title: string; value: AccountType }[] = [
   { title: 'Локальный', value: 'Local' },
   { title: 'LDAP', value: 'LDAP' },
@@ -64,7 +71,7 @@ const selectData: { title: string; value: AccountType }[] = [
       item-title="title"
       item-value="value"
       :items="selectData"
-      @update:model-value="inputCompleteHandler"
+      @update:model-value="selectHandler"
     />
     <VTextField
       name="login"
