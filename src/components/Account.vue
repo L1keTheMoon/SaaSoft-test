@@ -1,18 +1,15 @@
 <script setup lang="ts">
-import { defineProps, reactive, ref } from 'vue';
-import { useAccountsStore } from '../store/accounts';
-import type { AccountData, AccountType, InputAccountData } from '../types/types';
+import { useAccountsStore } from '@/store/accounts';
+import type { AccountType, LocalAccount } from '@/types/accounts';
+import { defineEmits, defineProps, reactive, ref } from 'vue';
 
-const { id, data = null } = defineProps<{ id: string; data?: AccountData }>();
+const { data } = defineProps<{ data: LocalAccount }>();
+const emits = defineEmits<{
+  deleteAccount: [id: string | number];
+}>();
 const accountsStore = useAccountsStore();
 
 const showPassword = ref(false);
-const inputData = reactive<InputAccountData>({
-  login: data?.login || '',
-  marks: data?.marks.map(el => el.text).join(';') || '',
-  password: data?.password || '',
-  type: data?.type || 'Локальная',
-});
 const inputErrors = reactive({
   login: '',
   password: '',
@@ -20,21 +17,18 @@ const inputErrors = reactive({
 
 function inputCompleteHandler() {
   let isValid = true;
-  if (!inputData.login) {
+
+  if (!data.login) {
     inputErrors.login = 'Обязательно';
     isValid = false;
   }
-  if (inputData.type === 'Локальная' && !inputData.password) {
+  if (data.type === 'Local' && !data.password) {
     inputErrors.password = 'Обязательно';
     isValid = false;
   }
 
   if (isValid) {
-    accountsStore.change(id, {
-      ...inputData,
-      marks: inputData.marks.split(';').map(el => ({ text: el })),
-      password: inputData.type === 'Локальная' ? inputData.password : null,
-    });
+    accountsStore.save(data);
   }
 }
 
@@ -45,57 +39,57 @@ function cleaarErrors(event: Event) {
   }
 }
 
-const selectData: AccountType[] = ['Локальная', 'LDAP'];
+const selectData: AccountType[] = ['Local', 'LDAP'];
 </script>
 
 <template>
-  <form class="account-data">
+  <li class="account-data">
     <VTextarea
-      variant="outlined"
       name="marks"
+      v-model="data.marks"
+      variant="outlined"
       rows="1"
       auto-grow
-      v-model="inputData.marks"
       maxlength="50"
       @blur="inputCompleteHandler"
     />
     <VSelect
-      variant="outlined"
       name="type"
+      v-model="data.type"
+      variant="outlined"
       :items="selectData"
-      v-model="inputData.type"
       @update:model-value="inputCompleteHandler"
     />
     <VTextField
-      variant="outlined"
       name="login"
-      v-model="inputData.login"
+      v-model="data.login"
+      variant="outlined"
       maxlength="100"
-      :style="inputData.type === 'LDAP' ? 'grid-column: auto / span 2' : ''"
+      :style="data.type === 'LDAP' ? 'grid-column: auto / span 2' : ''"
       @blur="inputCompleteHandler"
-      :error-messages="inputErrors.login"
       @input="cleaarErrors"
+      :error-messages="inputErrors.login"
     />
     <VTextField
-      variant="outlined"
       name="password"
-      v-show="inputData.type === 'Локальная'"
-      v-model="inputData.password"
+      v-if="data.type === 'Local'"
+      v-model="data.password"
+      variant="outlined"
       maxlength="100"
       :append-inner-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
       :type="showPassword ? 'text' : 'password'"
       @click:append-inner="showPassword = !showPassword"
       @blur="inputCompleteHandler"
-      :error-messages="inputErrors.password"
       @input="cleaarErrors"
+      :error-messages="inputErrors.password"
     />
     <VBtn
-      @click="accountsStore.remove(id)"
       icon="mdi-trash-can-outline"
       variant="text"
       size="large"
+      @click="emits('deleteAccount', data.id)"
     />
-  </form>
+  </li>
 </template>
 
 <style scoped>

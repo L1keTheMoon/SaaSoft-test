@@ -1,45 +1,49 @@
-import { defineStore } from 'pinia';
 import { ref } from 'vue';
-import type { Account, AccountData } from '../types/types';
+import { defineStore } from 'pinia';
+import type { Account, LocalAccount } from '@/types/accounts';
 
 export const useAccountsStore = defineStore('accounts', () => {
   let accounts = ref<Account[]>([]);
 
-  function add() {
-    accounts.value.push({ id: crypto.randomUUID() });
-  }
-
-  function change(id: string, newData: AccountData) {
-    accounts.value = accounts.value.map(el => {
-      if (el.id !== id) {
-        return el;
-      } else {
-        return { id, data: newData };
-      }
-    });
+  function save(newAccount: LocalAccount) {
+    const accountIndex = accounts.value.findIndex(el => el.id === newAccount.id);
+    if (accountIndex > -1) {
+      accounts.value[accountIndex] = parseLocalAccount(newAccount);
+    } else {
+      accounts.value.push(parseLocalAccount(newAccount));
+    }
     saveInStorage();
   }
 
   function remove(id: string) {
-    const removeIndex = accounts.value.findIndex(el => el.id === id)
-    const removed = accounts.value.splice(removeIndex, 1);
-    if (removed[0]?.data) {
+    const removeIndex = accounts.value.findIndex(el => el.id === id);
+    if (removeIndex > -1) {
+      accounts.value.splice(removeIndex, 1);
       saveInStorage();
     }
   }
 
   function saveInStorage() {
-    sessionStorage.setItem('accounts', JSON.stringify(accounts.value.filter(el => el.data)));
+    sessionStorage.setItem('accounts', JSON.stringify(accounts.value));
   }
 
-  function checkSavedData() {
+  function parseLocalAccount(localAccount: LocalAccount): Account {
+    return {
+      ...localAccount,
+      login: localAccount.login.trim(),
+      marks: localAccount.marks.split(';').map(el => ({ text: el.trim() })),
+      password: localAccount.type === 'Local' ? localAccount.password : null,
+    }
+  }
+
+  function loadSavedData() {
     const stringifiedData = sessionStorage.getItem('accounts');
     if (stringifiedData) {
       const savedAccounts = JSON.parse(stringifiedData) as Account[];
       accounts.value.push(...savedAccounts);
     }
   }
-  checkSavedData();
+  loadSavedData();
 
-  return { accounts, add, change, remove };
+  return { accounts, save, remove };
 });
