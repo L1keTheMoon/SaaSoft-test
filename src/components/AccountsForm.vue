@@ -5,10 +5,10 @@ import type { LocalAccount } from '@/types/accounts';
 import { onMounted, ref } from 'vue';
 
 const accountsStore = useAccountsStore();
-const loaclAccounts = ref<LocalAccount[]>([]);
+const localAccounts = ref<LocalAccount[]>([]);
 
 function addNewAccount() {
-  loaclAccounts.value.push({
+  localAccounts.value.push({
     id: crypto.randomUUID(),
     login: '',
     marks: '',
@@ -18,14 +18,14 @@ function addNewAccount() {
 }
 
 function deleteAccount(id: string | number) {
-  loaclAccounts.value = loaclAccounts.value.filter(el => el.id !== id);
+  localAccounts.value = localAccounts.value.filter(el => el.id !== id);
   if (typeof id === 'string') {
     accountsStore.remove(id);
   }
 }
 
 onMounted(() => {
-  loaclAccounts.value = accountsStore.accounts.map(el => ({
+  localAccounts.value = accountsStore.accounts.map(el => ({
     ...el,
     marks: el.marks.map(el => el.text).join(';') || '',
     password: el.password || '',
@@ -58,7 +58,7 @@ const titles = ['Метки', 'Тип записи', 'Логин', 'Пароль
     </div>
     <ul class="accounts">
       <Account
-        v-for="item in loaclAccounts"
+        v-for="item in localAccounts"
         :key="item.id"
         :data="item"
         @deleteAccount="deleteAccount"

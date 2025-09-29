@@ -3,7 +3,7 @@ import { defineStore } from 'pinia';
 import type { Account, LocalAccount } from '@/types/accounts';
 
 export const useAccountsStore = defineStore('accounts', () => {
-  let accounts = ref<Account[]>([]);
+  const accounts = ref<Account[]>([]);
 
   function save(newAccount: LocalAccount) {
     const accountIndex = accounts.value.findIndex(el => el.id === newAccount.id);
@@ -16,11 +16,8 @@ export const useAccountsStore = defineStore('accounts', () => {
   }
 
   function remove(id: string) {
-    const removeIndex = accounts.value.findIndex(el => el.id === id);
-    if (removeIndex > -1) {
-      accounts.value.splice(removeIndex, 1);
-      saveInStorage();
-    }
+    accounts.value = accounts.value.filter(el => el.id !== id);
+    saveInStorage();
   }
 
   function saveInStorage() {

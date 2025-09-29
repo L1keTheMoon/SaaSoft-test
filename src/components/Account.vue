@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useAccountsStore } from '@/store/accounts';
 import type { AccountType, LocalAccount } from '@/types/accounts';
-import { defineEmits, defineProps, reactive, ref } from 'vue';
+import { reactive, ref } from 'vue';
 
 const { data } = defineProps<{ data: LocalAccount }>();
 const emits = defineEmits<{
